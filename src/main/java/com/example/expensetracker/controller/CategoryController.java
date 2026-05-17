@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.expensetracker.exception.CategoryInUseException;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -21,7 +22,9 @@ public class CategoryController {
 
     @GetMapping("/categories")
     public String list(Model model) {
-        model.addAttribute("categories", categoryService.findAll());
+        List<Category> categories = categoryService.findAll();
+        model.addAttribute("categories", categories);
+        model.addAttribute("transactionCounts", categoryService.getTransactionCounts(categories));
         return "categories/list";
     }
 

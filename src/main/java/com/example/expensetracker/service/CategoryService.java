@@ -13,6 +13,8 @@ import com.example.expensetracker.repository.TransactionRepository;
 import com.example.expensetracker.exception.CategoryInUseException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -62,6 +64,15 @@ public class CategoryService {
             throw new CategoryInUseException(id);
         }
         categoryRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Map<Long, Long> getTransactionCounts(List<Category> categories) {
+        Map<Long, Long> counts = new HashMap<>();
+        for (Category category : categories) {
+            counts.put(category.getId(), transactionRepository.countByCategory_Id(category.getId()));
+        }
+        return counts;
     }
 
 }

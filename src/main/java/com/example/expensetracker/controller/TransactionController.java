@@ -24,6 +24,12 @@ public class TransactionController {
     private final AccountService accountService;
     private final CategoryService categoryService;
 
+    @ModelAttribute
+    public void populateDropdowns(Model model) {
+        model.addAttribute("accounts", accountService.findAll());
+        model.addAttribute("categories", categoryService.findAll());
+    }
+
     @GetMapping("/transactions")
     public String list(@RequestParam(required = false) LocalDate start,
                        @RequestParam(required = false) LocalDate end,
@@ -36,8 +42,6 @@ public class TransactionController {
     @GetMapping("/transactions/new")
     public String newForm(Model model) {
         model.addAttribute("transactionForm", new TransactionForm());
-        model.addAttribute("accounts", accountService.findAll());
-        model.addAttribute("categories", categoryService.findAll());
         return "transactions/form";
     }
 
@@ -47,8 +51,6 @@ public class TransactionController {
                          Model model,
                          RedirectAttributes flash) {
         if (result.hasErrors()) {
-            model.addAttribute("accounts", accountService.findAll());
-            model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("mode", "create");
             return "transactions/form";
         }
@@ -68,8 +70,6 @@ public class TransactionController {
                 transaction.getAccount().getId(),
                 transaction.getCategory().getId()
         );
-        model.addAttribute("accounts", accountService.findAll());
-        model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("transactionForm", form);
         model.addAttribute("mode", "edit");
         model.addAttribute("pageTitle", "Edit Transaction");
@@ -85,8 +85,6 @@ public class TransactionController {
                          Model model,
                          RedirectAttributes flash) {
         if (result.hasErrors()) {
-            model.addAttribute("accounts", accountService.findAll());
-            model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("mode", "edit");
             return "transactions/form";
         }
